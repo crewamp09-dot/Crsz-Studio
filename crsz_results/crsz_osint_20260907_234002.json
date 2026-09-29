@@ -1,0 +1,31 @@
+{
+    "timestamp": "2026-09-07T23:39:55.252920",
+    "tiktok": null,
+    "instagram": null,
+    "email_breaches": [],
+    "ip_info": {
+        "ip": "88.230.62.17",
+        "country": "Türkiye",
+        "city": "Muğla",
+        "region": "Muğla",
+        "isp": "Turk Telekomunikasyon A.S",
+        "lat": 37.2167,
+        "lon": 28.3674
+    },
+    "phone_info": null,
+    "whois": {
+        "domain": "https://www.tiktok.com/tr-TR/",
+        "registrar": "Gandi SAS",
+        "creation_date": "[datetime.datetime(1996, 7, 21, 4, 0, tzinfo=tzoffset('UTC', 0)), datetime.datetime(1996, 7, 21, 2, 0, tzinfo=tzoffset('UTC', 0))]",
+        "expiration_date": "2027-07-20 04:00:00+00:00",
+        "name_servers": [
+            "A1-97.AKAM.NET",
+            "A12-66.AKAM.NET",
+            "A13-67.AKAM.NET"
+        ]
+    },
+    "username_found": [
+        "reddit",
+        "pinterest"
+    ]
+}
