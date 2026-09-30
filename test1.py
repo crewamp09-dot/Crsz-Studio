@@ -71,7 +71,6 @@ def init_db():
             link TEXT,
             image TEXT,
             video_url TEXT,
-            file_path TEXT,
             download_enabled BOOLEAN DEFAULT 1,
             rating_sum INTEGER DEFAULT 0,
             rating_count INTEGER DEFAULT 0,
@@ -81,7 +80,6 @@ def init_db():
 
     project_cols = [
         ('video_url', 'TEXT'),
-        ('file_path', 'TEXT'),
         ('download_enabled', 'BOOLEAN DEFAULT 1'),
         ('rating_sum', 'INTEGER DEFAULT 0'),
         ('rating_count', 'INTEGER DEFAULT 0'),
@@ -263,50 +261,35 @@ BASE_TEMPLATE = """
         .project-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
         .project-desc { font-size: 0.82rem; color: #94a3b8; line-height: 1.5; margin-bottom: 15px; flex: 1; }
         
+        /* Tam Genişlikte İncele Butonu */
         .incele-btn { display: flex; align-items: center; justify-content: center; width: 100%; padding: 10px; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); font-weight: 700; border-radius: 8px; text-decoration: none; font-size: 0.82rem; transition: 0.3s; margin-top: auto; }
         .incele-btn:hover { background: var(--accent); color: #030712; }
         
-        /* Tam Ekran App-Store Tarzı Detay Sayfası / Modalı */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #030712; z-index: 9999; overflow-y: auto; flex-direction: column; }
-        .store-header-banner { width: 100%; height: 220px; background: rgba(0,0,0,0.5); position: relative; overflow: hidden; display: flex; align-items: flex-end; }
-        .store-header-banner img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
-        .store-header-banner::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, #030712, transparent); z-index: 2; }
-        .store-close-floating { position: fixed; top: 15px; right: 20px; z-index: 10001; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: 0.2s; }
-        .store-close-floating:hover { background: var(--accent); color: #030712; }
-
-        .store-container { max-width: 750px; margin: 0 auto; padding: 20px; width: 100%; position: relative; z-index: 3; margin-top: -40px; }
-        .store-app-info { display: flex; gap: 16px; align-items: center; margin-bottom: 25px; background: rgba(17, 24, 39, 0.8); border: 1px solid rgba(255,255,255,0.08); padding: 16px; border-radius: 20px; backdrop-filter: blur(20px); }
-        .store-app-icon { width: 85px; height: 85px; border-radius: 16px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
-        .store-app-details h2 { font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
-        .store-app-details p { font-size: 0.85rem; color: #94a3b8; line-height: 1.4; }
-
-        .store-metrics { display: flex; justify-content: space-around; background: rgba(17, 24, 39, 0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 14px; margin-bottom: 25px; text-align: center; }
-        .metric-item span { display: block; font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 2px; }
-        .metric-item strong { font-size: 0.95px; color: #fff; font-weight: 700; }
-
-        .modal-video-container { width: 100%; border-radius: 14px; overflow: hidden; margin-bottom: 25px; background: #000; border: 1px solid rgba(255,255,255,0.08); }
-        .preview-video { width: 100%; max-height: 280px; object-fit: cover; display: block; }
+        /* Play Store / Modal Penceresi Tasarımı (Çift Tıklayınca Açılır) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 9999; justify-content: center; align-items: center; padding: 15px; }
+        .modal-content { background: #0f172a; border: 1px solid var(--accent); width: 100%; max-width: 550px; max-height: 90vh; border-radius: 20px; padding: 25px; overflow-y: auto; text-align: left; position: relative; box-shadow: 0 0 35px rgba(56, 189, 248, 0.3); }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 26px; cursor: pointer; color: #ef4444; transition: 0.2s; }
+        .close-btn:hover { color: #fff; }
+        .modal-video-container { width: 100%; max-height: 250px; border-radius: 10px; overflow: hidden; margin: 15px 0; background: #000; }
+        .preview-video { width: 100%; height: 100%; max-height: 250px; object-fit: cover; display: block; }
         
-        .download-section { margin-bottom: 25px; display: flex; flex-direction: column; gap: 10px; }
-        .btn-download { display: block; width: 100%; padding: 14px; text-align: center; border-radius: 12px; font-weight: 700; text-decoration: none; transition: 0.2s; font-size: 0.95rem; }
+        .download-section { margin: 20px 0; }
+        .btn-download { display: block; width: 100%; padding: 12px; text-align: center; border-radius: 10px; font-weight: 700; text-decoration: none; transition: 0.2s; font-size: 0.9rem; }
         .btn-download.active { background: #22c55e; color: #fff; }
         .btn-download.active:hover { background: #16a34a; }
-        .btn-download.external { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: var(--accent); }
-        .btn-download.external:hover { background: var(--accent); color: #030712; }
         .btn-download.disabled { background: #334155; color: #94a3b8; border: none; cursor: not-allowed; }
 
-        .rating-box { background: rgba(17, 24, 39, 0.6); border: 1px solid rgba(255,255,255,0.08); padding: 16px; border-radius: 16px; margin-bottom: 25px; text-align: center; backdrop-filter: blur(15px); }
-        .stars { display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
-        .stars span { font-size: 28px; cursor: pointer; color: #fbbf24; transition: transform 0.1s; }
+        .rating-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 12px; border-radius: 10px; margin: 15px 0; text-align: center; }
+        .stars { display: flex; justify-content: center; gap: 5px; margin-top: 6px; }
+        .stars span { font-size: 24px; cursor: pointer; color: #fbbf24; transition: transform 0.1s; }
         .stars span:hover { transform: scale(1.25); }
 
-        .comments-box { background: rgba(17, 24, 39, 0.6); border: 1px solid rgba(255,255,255,0.08); padding: 20px; border-radius: 16px; margin-bottom: 40px; backdrop-filter: blur(15px); }
-        .comments-box h3 { font-size: 1rem; margin-bottom: 12px; color: #fff; }
-        .comment-list { max-height: 150px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 12px; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.05); }
+        .comments-box h3 { font-size: 0.95rem; margin-bottom: 8px; color: #fff; }
+        .comment-list { max-height: 120px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 0.82rem; border: 1px solid rgba(255,255,255,0.05); }
         .comment-input-group { display: flex; gap: 8px; }
-        .comment-input-group input { flex: 1; background: #030712; border: 1px solid rgba(255,255,255,0.1); padding: 10px 12px; color: #fff; border-radius: 10px; font-size: 0.88rem; outline: none; }
+        .comment-input-group input { flex: 1; background: #030712; border: 1px solid rgba(255,255,255,0.1); padding: 9px; color: #fff; border-radius: 8px; font-size: 0.85rem; outline: none; }
         .comment-input-group input:focus { border-color: var(--accent); }
-        .comment-input-group button { background: var(--accent); border: none; color: #030712; padding: 0 18px; border-radius: 10px; cursor: pointer; font-weight: 700; }
+        .comment-input-group button { background: var(--accent); border: none; color: #030712; padding: 0 15px; border-radius: 8px; cursor: pointer; font-weight: 700; }
 
         .admin-box { background: rgba(17, 24, 39, 0.85); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 25px; backdrop-filter: blur(20px); max-width: 800px; margin: 30px auto; }
         .admin-box h2 { font-size: 1.3rem; color: var(--accent); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
@@ -369,7 +352,7 @@ def index():
         'views': row['views'] or 0
     }
     
-    cursor.execute('SELECT id, title, category, description, link, image, video_url, file_path, download_enabled, avg_rating, rating_count FROM projects')
+    cursor.execute('SELECT id, title, category, description, link, image, video_url, download_enabled, avg_rating, rating_count FROM projects')
     projects = [dict(r) for r in cursor.fetchall()]
 
     cursor.execute('SELECT id, title, artist, file_path, cover_image FROM music')
@@ -457,7 +440,7 @@ def index():
         
         <div class="projects-grid">
             {% for p in projects %}
-                <!-- Proje Kartı -->
+                <!-- Proje Kartı: Çift tıklayınca modal açılır -->
                 <div class="project-card" ondblclick="openModal('{{ p.id }}')">
                     {% if p.image %}
                         <div class="project-img-wrapper">
@@ -469,47 +452,21 @@ def index():
                         <div class="project-name">{{ p.title }}</div>
                         <div class="project-desc">{{ p.description }}</div>
                         
+                        <!-- İncele Butonu: Tek tıklamayla direkt p.link adresine gider -->
                         <a href="{{ p.link or '#' }}" target="_blank" class="incele-btn" onclick="event.stopPropagation()">
                             İncele <i class="fa-solid fa-arrow-up-right-from-square" style="margin-left: 6px;"></i>
                         </a>
                     </div>
                 </div>
 
-                <!-- Tam Ekran App Store Tarzı Detay Sayfası / Modalı -->
+                <!-- Çift Tıklandığında Açılan Tam Ekran Play Store Modalı -->
                 <div class="modal-overlay" id="modal-{{ p.id }}">
-                    <div class="store-close-floating" onclick="closeModal('{{ p.id }}')">&times;</div>
-                    
-                    <div class="store-header-banner">
-                        {% if p.image %}
-                            <img src="{{ p.image }}" alt="Banner">
-                        {% endif %}
-                    </div>
-
-                    <div class="store-container" onclick="event.stopPropagation()">
-                        <div class="store-app-info">
-                            {% if p.image %}
-                                <img src="{{ p.image }}" class="store-app-icon" alt="Icon">
-                            {% endif %}
-                            <div class="store-app-details">
-                                <h2>{{ p.title }}</h2>
-                                <p>{{ p.category }}</p>
-                            </div>
-                        </div>
-
-                        <div class="store-metrics">
-                            <div class="metric-item">
-                                <span>Puanlama</span>
-                                <strong>{{ p.avg_rating | default(0) }} / 5</strong>
-                            </div>
-                            <div class="metric-item">
-                                <span>Toplam Oy</span>
-                                <strong>{{ p.rating_count | default(0) }}</strong>
-                            </div>
-                            <div class="metric-item">
-                                <span>Kategori</span>
-                                <strong>{{ p.category }}</strong>
-                            </div>
-                        </div>
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <span class="close-btn" onclick="closeModal('{{ p.id }}')">&times;</span>
+                        
+                        <h2 style="color: var(--accent); margin-bottom: 8px;">{{ p.title }}</h2>
+                        <span style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">{{ p.category }}</span>
+                        <p style="font-size: 0.88rem; color: #cbd5e1; margin: 12px 0; line-height: 1.5;">{{ p.description }}</p>
 
                         <!-- Önizleme Videosu -->
                         {% if p.video_url %}
@@ -518,20 +475,10 @@ def index():
                         </div>
                         {% endif %}
 
-                        <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 25px; line-height: 1.6;">{{ p.description }}</p>
-
                         <!-- İndirme / Bağlantı Alanı -->
                         <div class="download-section">
                             {% if p.download_enabled %}
-                                {% if p.file_path %}
-                                    <a href="/uploads/{{ p.file_path }}" class="btn-download active" download>📥 Doğrudan Dosyayı İndir</a>
-                                {% endif %}
-                                {% if p.link %}
-                                    <a href="{{ p.link }}" class="btn-download external" target="_blank">🔗 Harici Bağlantıya Git (İncele)</a>
-                                {% endif %}
-                                {% if not p.file_path and not p.link %}
-                                    <button class="btn-download disabled" disabled>🚫 Bağlantı Bulunmuyor</button>
-                                {% endif %}
+                                <a href="{{ p.link or '#' }}" class="btn-download active" target="_blank">📥 Projeyi İndir / Bağlantıya Git</a>
                             {% else %}
                                 <button class="btn-download disabled" disabled>🚫 Bu Proje İçin İndirme Kapatıldı</button>
                             {% endif %}
@@ -539,7 +486,8 @@ def index():
 
                         <!-- Puanlama Alanı -->
                         <div class="rating-box">
-                            <p style="font-size: 0.85rem; color: #cbd5e1;">Bu Projeyi Puanla (<span id="avg-rating-{{ p.id }}">{{ p.avg_rating | default(0) }}</span>/5 - Toplam Oy: <span id="rating-count-{{ p.id }}">{{ p.rating_count | default(0) }}</span>)</p>
+                            <p style="font-size: 0.82rem; color: #cbd5e1;">Genel Puan: <strong id="avg-rating-{{ p.id }}">{{ p.avg_rating | default(0) }}</strong> / 5 
+                               (Toplam Oy: <span id="rating-count-{{ p.id }}">{{ p.rating_count | default(0) }}</span>)</p>
                             <div class="stars">
                                 <span onclick="rate('{{ p.id }}', 1)">★</span>
                                 <span onclick="rate('{{ p.id }}', 2)">★</span>
@@ -593,11 +541,11 @@ def index():
         function switchTrack() { loadSelectedTrack(); player.play(); playIcon.className = "fa-solid fa-pause"; }
         window.onload = function() { loadSelectedTrack(); };
 
+        // Modal ve Etkileşim Scriptleri
         function openModal(projectId) {
             const modal = document.getElementById(`modal-${projectId}`);
             if (modal) {
                 modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
                 loadComments(projectId);
             }
         }
@@ -606,7 +554,6 @@ def index():
             const modal = document.getElementById(`modal-${projectId}`);
             if (modal) {
                 modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
                 const vid = modal.querySelector('video');
                 if(vid) vid.pause();
             }
@@ -834,13 +781,10 @@ ADMIN_TEMPLATE_HTML = """
                     <div class="form-group"><label>Başlık</label><input type="text" name="title" class="form-input" required></div>
                     <div class="form-group"><label>Kategori</label><input type="text" name="category" class="form-input" required></div>
                     <div class="form-group"><label>Açıklama</label><input type="text" name="description" class="form-input" required></div>
-                    <div class="form-group"><label>Harici İnceleme Linki (Opsiyonel)</label><input type="text" name="link" class="form-input"></div>
+                    <div class="form-group"><label>Proje / İndirme Linki</label><input type="text" name="link" class="form-input"></div>
                     
-                    <div class="form-group"><label>İndirilebilir Dosya Yükle (.zip, .apk, .rar vb.)</label><input type="file" name="project_file" class="form-input" accept=".zip,.rar,.apk,.pdf,.exe"></div>
-
                     <div class="form-group"><label>Önizleme Videosu Yükle (MP4)</label><input type="file" name="video_file" class="form-input" accept=".mp4,.webm"></div>
                     <div class="form-group"><label>Veya Önizleme Video URL</label><input type="text" name="video_url" class="form-input" placeholder="Direkt video linki"></div>
-                    
                     <div class="form-group">
                         <label>İndirme Durumu</label>
                         <select name="download_enabled" class="form-input">
@@ -849,7 +793,7 @@ ADMIN_TEMPLATE_HTML = """
                         </select>
                     </div>
 
-                    <div class="form-group"><label>Proje Kapak Görseli Yükle</label><input type="file" name="image_file" class="form-input" accept=".jpg,.png,.jpeg"></div>
+                    <div class="form-group"><label>Proje Kapak Görseli Yükle</label><input type="file" name="project_file" class="form-input" accept=".jpg,.png,.jpeg"></div>
                     <div class="form-group"><label>Veya Kapak Görsel URL</label><input type="text" name="image" class="form-input"></div>
                     <button type="submit" class="btn-main">Projeyi Ekle</button>
                 </form>
@@ -1053,20 +997,13 @@ def add_project():
         link = request.form.get('link', '').strip() or None
         download_enabled = int(request.form.get('download_enabled', 1))
         
-        image_file = request.files.get('image_file')
+        project_file = request.files.get('project_file')
         image_url = request.form.get('image', '').strip() or None
         image = image_url
-        if image_file and image_file.filename != '':
-            filename = secure_filename(image_file.filename)
-            image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            image = f"/uploads/{filename}"
-
-        project_file = request.files.get('project_file')
-        file_path = None
         if project_file and project_file.filename != '':
-            f_filename = secure_filename(project_file.filename)
-            project_file.save(os.path.join(app.config['UPLOAD_FOLDER'], f_filename))
-            file_path = f_filename
+            filename = secure_filename(project_file.filename)
+            project_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            image = f"/uploads/{filename}"
 
         video_file = request.files.get('video_file')
         video_url_input = request.form.get('video_url', '').strip() or None
@@ -1078,9 +1015,9 @@ def add_project():
 
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('''INSERT INTO projects (title, category, description, link, image, video_url, file_path, download_enabled) 
-                          VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', 
-                       (title, category, description, link, image, video_url, file_path, download_enabled))
+        cursor.execute('''INSERT INTO projects (title, category, description, link, image, video_url, download_enabled) 
+                          VALUES (?, ?, ?, ?, ?, ?, ?)''', 
+                       (title, category, description, link, image, video_url, download_enabled))
         conn.commit()
         conn.close()
         flash('Proje başarıyla eklendi!')
@@ -1100,28 +1037,21 @@ def edit_project(id):
         link = request.form.get('link', '').strip() or None
         download_enabled = int(request.form.get('download_enabled', 1))
         
-        image_file = request.files.get('image_file')
-        image_url = request.form.get('image', '').strip() or None
         project_file = request.files.get('project_file')
+        image_url = request.form.get('image', '').strip() or None
         video_file = request.files.get('video_file')
         video_url_input = request.form.get('video_url', '').strip() or None
 
-        cursor.execute('SELECT image, video_url, file_path FROM projects WHERE id = ?', (id,))
+        cursor.execute('SELECT image, video_url FROM projects WHERE id = ?', (id,))
         old_proj = cursor.fetchone()
         image = old_proj['image'] if old_proj else None
         video_url = old_proj['video_url'] if old_proj else None
-        file_path = old_proj['file_path'] if old_proj else None
 
         if image_url: image = image_url
-        if image_file and image_file.filename != '':
-            filename = secure_filename(image_file.filename)
-            image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            image = f"/uploads/{filename}"
-
         if project_file and project_file.filename != '':
-            f_filename = secure_filename(project_file.filename)
-            project_file.save(os.path.join(app.config['UPLOAD_FOLDER'], f_filename))
-            file_path = f_filename
+            filename = secure_filename(project_file.filename)
+            project_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            image = f"/uploads/{filename}"
 
         if video_url_input: video_url = video_url_input
         if video_file and video_file.filename != '':
@@ -1129,8 +1059,8 @@ def edit_project(id):
             video_file.save(os.path.join(app.config['UPLOAD_FOLDER'], v_filename))
             video_url = f"/uploads/{v_filename}"
 
-        cursor.execute('''UPDATE projects SET title = ?, category = ?, description = ?, link = ?, image = ?, video_url = ?, file_path = ?, download_enabled = ? WHERE id = ?''', 
-                       (title, category, description, link, image, video_url, file_path, download_enabled, id))
+        cursor.execute('''UPDATE projects SET title = ?, category = ?, description = ?, link = ?, image = ?, video_url = ?, download_enabled = ? WHERE id = ?''', 
+                       (title, category, description, link, image, video_url, download_enabled, id))
         conn.commit()
         conn.close()
         flash('Proje başarıyla güncellendi!')
@@ -1160,7 +1090,7 @@ def edit_project(id):
                 <div class="form-group"><label>Başlık</label><input type="text" name="title" class="form-input" value="{{ project.title }}" required></div>
                 <div class="form-group"><label>Kategori</label><input type="text" name="category" class="form-input" value="{{ project.category }}" required></div>
                 <div class="form-group"><label>Açıklama</label><input type="text" name="description" class="form-input" value="{{ project.description }}" required></div>
-                <div class="form-group"><label>Harici İnceleme Linki</label><input type="text" name="link" class="form-input" value="{{ project.link or '' }}"></div>
+                <div class="form-group"><label>Proje Linki</label><input type="text" name="link" class="form-input" value="{{ project.link or '' }}"></div>
                 
                 <div class="form-group">
                     <label>İndirme Durumu</label>
@@ -1170,11 +1100,10 @@ def edit_project(id):
                     </select>
                 </div>
 
-                <div class="form-group"><label>Yeni İndirilebilir Dosya Yükle</label><input type="file" name="project_file" class="form-input" accept=".zip,.rar,.apk,.pdf,.exe"></div>
                 <div class="form-group"><label>Yeni Önizleme Videosu Yükle</label><input type="file" name="video_file" class="form-input" accept=".mp4,.webm"></div>
                 <div class="form-group"><label>Veya Video URL</label><input type="text" name="video_url" class="form-input" value="{{ project.video_url or '' }}"></div>
 
-                <div class="form-group"><label>Yeni Proje Kapak Görseli Yükle</label><input type="file" name="image_file" class="form-input" accept=".jpg,.png,.jpeg"></div>
+                <div class="form-group"><label>Yeni Proje Görseli Yükle</label><input type="file" name="project_file" class="form-input" accept=".jpg,.png,.jpeg"></div>
                 <div class="form-group"><label>Veya Görsel URL</label><input type="text" name="image" class="form-input" value="{{ project.image or '' }}"></div>
                 <button type="submit" class="btn-main">Değişiklikleri Kaydet</button>
             </form>
